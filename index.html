@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mzansi Village Market | Local Vendors & Village Delivery (Giyani 0826)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fffbe1',
+                            100: '#fef3c7',
+                            500: '#f59e0b', // UberEats/MrD-style vibrant warm gold
+                            600: '#d97706',
+                            700: '#b45309',
+                        },
+                        uberdark: '#121212',
+                        ubergreen: '#06c167', // UberEats signature green accent
+                        village: {
+                            emerald: '#047857',
+                            lightgreen: '#d1fae5',
+                            terracotta: '#ea580c',
+                            cardbg: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom UI polish for mobile feel */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .tab-active {
+            color: #06c167;
+            border-bottom: 3px solid #06c167;
+            font-weight: 700;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+        .pulse-badge { animation: pulseGlow 2s infinite ease-in-out; }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-ubergreen selection:text-white pb-20 lg:pb-0">
+
+    <!-- TOP APP BAR -->
+    <header class="sticky top-0 z-40 bg-uberdark text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-3">
+                
+                <!-- Logo & Branding -->
+                <div class="flex items-center gap-2.5 cursor-pointer" onclick="switchMainView('customer'); filterCategory('all');">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-ubergreen via-emerald-600 to-brand-500 flex items-center justify-center text-white shadow-md font-black text-xl sm:text-2xl">
+                        M
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-base sm:text-xl font-extrabold text-white tracking-tight leading-none">Mzansi Village</span>
+                            <span class="text-[10px] bg-ubergreen text-slate-950 font-black px-1.5 py-0.5 rounded uppercase">Market</span>
+                        </div>
+                        <p class="text-[11px] font-medium text-slate-300 mt-0.5">Connecting Local Vendors & Homes</p>
+                    </div>
+                </div>
+
+                <!-- Location Selector Widget (Desktop) -->
+                <div class="hidden md:flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 px-3.5 py-2 rounded-2xl border border-slate-700 text-xs text-slate-200 cursor-pointer transition" onclick="openLocationModal()">
+                    <i class="fa-solid fa-location-dot text-ubergreen text-sm"></i>
+                    <div>
+                        <span class="text-[10px] text-slate-400 block font-semibold uppercase leading-none">Delivering To</span>
+                        <span id="headerLocationLabel" class="font-bold text-white">Giyani Section A (0826)</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-1"></i>
+                </div>
+
+                <!-- Central Search Bar (Desktop) -->
+                <div class="hidden lg:flex flex-1 max-w-sm mx-4">
+                    <div class="relative w-full">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="desktopSearch" onkeyup="handleSearch(this.value)" placeholder="Search dry wood, mangoes, pap, butchery..." 
+                            class="w-full pl-10 pr-4 py-2 bg-slate-800 text-slate-100 border border-slate-700 rounded-full text-xs focus:bg-slate-900 focus:border-ubergreen focus:outline-none transition">
+                    </div>
+                </div>
+
+                <!-- Right Quick Actions: Vendor Join, Portal Switch, Cart -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    
+                    <!-- Vendor Onboarding Button -->
+                    <button onclick="openVendorJoinModal()" class="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 to-brand-600 hover:from-amber-600 hover:to-brand-700 text-slate-950 font-extrabold text-xs transition shadow-md flex items-center gap-1.5">
+                        <i class="fa-solid fa-store"></i>
+                        <span class="hidden sm:inline">Sell Here</span>
+                        <span class="bg-slate-950/20 text-slate-950 text-[9px] px-1.5 py-0.5 rounded font-black">R50/pm</span>
+                    </button>
+
+                    <!-- View Switcher Button (Customer vs Vendor Portal) -->
+                    <button id="viewSwitchBtn" onclick="toggleMainView()" class="p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-700 hover:border-ubergreen text-xs font-bold text-slate-200 bg-slate-800 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-gauge-high text-ubergreen" id="viewSwitchIcon"></i>
+                        <span id="viewSwitchText" class="hidden sm:inline">Merchant Portal</span>
+                    </button>
+
+                    <!-- UberEats Cart Trigger -->
+                    <button id="cartHeaderBtn" onclick="toggleCartModal(true)" class="relative p-2.5 sm:px-4 sm:py-2 rounded-xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-extrabold text-xs sm:text-sm transition flex items-center gap-2 shadow-md">
+                        <i class="fa-solid fa-bag-shopping text-base"></i>
+                        <span class="hidden sm:inline">Basket</span>
+                        <span id="cartCountBadge" class="bg-slate-950 text-white font-extrabold text-[11px] px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MOBILE LOCATION BAR (Visible on mobile screens) -->
+    <div class="md:hidden bg-slate-900 text-slate-200 px-4 py-2 flex items-center justify-between text-xs border-b border-slate-800" onclick="openLocationModal()">
+        <div class="flex items-center gap-2 truncate">
+            <i class="fa-solid fa-location-dot text-ubergreen"></i>
+            <span class="text-slate-400">Location:</span>
+            <span id="mobileLocationLabel" class="font-bold text-white truncate">Giyani Section A (0826)</span>
+        </div>
+        <i class="fa-solid fa-pen-to-square text-ubergreen"></i>
+    </div>
+
+    <!-- MAIN CUSTOMER APP VIEW -->
+    <main id="customerView" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        
+        <!-- PROMOTIONAL HERO BANNER -->
+        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-uberdark via-slate-900 to-slate-800 text-white shadow-2xl border border-slate-800">
+            <div class="relative z-10 px-6 py-8 sm:p-10 lg:p-12 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-4 max-w-xl text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-ubergreen/20 text-ubergreen border border-ubergreen/30 text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-motorcycle"></i> UberEats & Mr D Style Local Express
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-none">
+                        Order Local Essentials From <span class="text-ubergreen">Giyani Vendors.</span>
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base font-medium leading-relaxed">
+                        Dry hardwood bundles, fresh Limpopo mangoes, farm vegetables, and butchery braai meat delivered straight to your stand.
+                    </p>
+                    <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                        <a href="#catalogueSection" class="px-6 py-3 rounded-xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-black text-sm transition shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-utensils"></i> Browse Catalogue
+                        </a>
+                        <button onclick="openVendorJoinModal()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-brand-500 border border-brand-500/40 font-bold text-sm transition flex items-center gap-2">
+                            <i class="fa-solid fa-store"></i> Register Your Vendor Store (R50/pm)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hero Feature Card -->
+                <div class="w-full md:w-80 rounded-2xl bg-slate-800/90 backdrop-blur-md p-4 border border-slate-700 shadow-2xl space-y-3">
+                    <div class="flex items-center justify-between text-xs text-slate-400">
+                        <span class="font-bold text-ubergreen">FEATURED GIYANI STORE</span>
+                        <span class="bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded font-black">4.9 ★</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <img src="https://images.unsplash.com/photo-1520116468816-95b69f847357?auto=format&fit=crop&w=300&q=80" alt="Giyani Wood" class="w-20 h-20 rounded-xl object-cover">
+                        <div>
+                            <h4 class="font-black text-white text-sm">Giyani Hardwood Co.</h4>
+                            <p class="text-[11px] text-slate-300">Dry stacked logs (Huni)</p>
+                            <p class="text-xs font-bold text-ubergreen mt-1">Delivery: 20-35 mins</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CATEGORIES SLIDER BAR -->
+        <section class="space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-grip text-ubergreen"></i> Categories
+                </h2>
+                <span id="activeCategoryTag" class="text-xs font-bold text-slate-500">Showing All Essentials</span>
+            </div>
+
+            <!-- Horizontal Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 hide-scrollbar">
+                <button onclick="filterCategory('all')" class="cat-pill active px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition border bg-uberdark text-white border-uberdark shadow-md" data-category="all">
+                    All Marketplace
+                </button>
+                <button onclick="filterCategory('fuel')" class="cat-pill px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition border bg-white text-slate-700 border-slate-200 hover:border-ubergreen" data-category="fuel">
+                    🪵 Firewood & Fuel
+                </button>
+                <button onclick="filterCategory('veggies')" class="cat-pill px-4 py-2.5 rounded-2xl text-xs sm:text-sm whitespace-nowrap font-extrabold transition border bg-white text-slate-700 border-slate-200 hover:border-ubergreen" data-category="veggies">
+                    🥬 Fresh Produce & Farm
+                </button>
+                <button onclick="filterCategory('fruits')" class="cat-pill px-4 py-2.5 rounded-2xl text-xs sm:text-sm whitespace-nowrap font-extrabold transition border bg-white text-slate-700 border-slate-200 hover:border-ubergreen" data-category="fruits">
+                    🥭 Giyani Fruits
+                </button>
+                <button onclick="filterCategory('meats')" class="cat-pill px-4 py-2.5 rounded-2xl text-xs sm:text-sm whitespace-nowrap font-extrabold transition border bg-white text-slate-700 border-slate-200 hover:border-ubergreen" data-category="meats">
+                    🥩 Butchery & Chisa Nyama
+                </button>
+                <button onclick="filterCategory('spaza')" class="cat-pill px-4 py-2.5 rounded-2xl text-xs sm:text-sm whitespace-nowrap font-extrabold transition border bg-white text-slate-700 border-slate-200 hover:border-ubergreen" data-category="spaza">
+                    🌾 Spaza Basics & Pap
+                </button>
+            </div>
+        </section>
+
+        <!-- GIYANI VENDORS HORIZONTAL CAROUSEL -->
+        <section class="space-y-3">
+            <div class="flex items-center justify-between">
+                <h2 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-store text-brand-600"></i> Local Verified Vendors (Giyani 0826)
+                </h2>
+                <button onclick="filterVendor('all')" class="text-xs font-bold text-ubergreen hover:underline">Show All Stores</button>
+            </div>
+
+            <div id="vendorCarousel" class="flex items-center gap-4 overflow-x-auto pb-3 hide-scrollbar">
+                <!-- Javascript will inject vendor store cards -->
+            </div>
+        </section>
+
+        <!-- PRODUCT CATALOGUE GRID -->
+        <section id="catalogueSection" class="space-y-4">
+            <div class="flex items-center justify-between">
+                <h2 class="text-base sm:text-lg font-black text-slate-900">Explore Products</h2>
+                <span id="productCountBadge" class="text-xs font-bold text-slate-500">8 Items Available</span>
+            </div>
+
+            <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Javascript will inject product items dynamically -->
+            </div>
+
+            <!-- Empty Search State -->
+            <div id="noResultsState" class="hidden text-center py-16 bg-white rounded-3xl border border-dashed border-slate-300 p-8 space-y-3">
+                <div class="w-16 h-16 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-2xl">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800">No matching items found</h3>
+                <p class="text-xs text-slate-500 max-w-sm mx-auto">Try resetting filters or searching for dry wood, cabbage, mangoes or pap.</p>
+                <button onclick="filterCategory('all'); filterVendor('all');" class="px-4 py-2 bg-ubergreen text-slate-950 font-black text-xs rounded-xl shadow-md">Reset Search</button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MAIN VENDOR PORTAL VIEW (Hidden by Default) -->
+    <main id="merchantView" class="hidden flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        
+        <!-- Vendor Dashboard Header -->
+        <div class="bg-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-black px-2.5 py-0.5 rounded-full bg-ubergreen text-slate-950 uppercase">Active Vendor</span>
+                        <span class="text-xs text-slate-400">Subscription: <span class="text-amber-400 font-bold">R50/pm Paid</span></span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold mt-1">Giyani Local Merchants Center</h1>
+                    <p class="text-slate-400 text-xs sm:text-sm">Manage orders from Giyani villages, adjust product prices & stock availability.</p>
+                </div>
+
+                <button onclick="openAddProductModal()" class="px-4 py-2.5 rounded-xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-black text-xs transition shadow-md flex items-center justify-center gap-2 shrink-0">
+                    <i class="fa-solid fa-plus-circle"></i> Add New Product to Store
+                </button>
+            </div>
+
+            <!-- Dashboard Quick Stats -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-slate-800">
+                <div class="bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-extrabold uppercase">Today's Sales</p>
+                    <p id="dashTotalSales" class="text-lg sm:text-2xl font-black text-ubergreen">R 0.00</p>
+                </div>
+                <div class="bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-extrabold uppercase">Pending Orders</p>
+                    <p id="dashActiveOrders" class="text-lg sm:text-2xl font-black text-brand-500">0</p>
+                </div>
+                <div class="bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-extrabold uppercase">Listed Items</p>
+                    <p id="dashItemCount" class="text-lg sm:text-2xl font-black text-slate-200">0</p>
+                </div>
+                <div class="bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700">
+                    <p class="text-[10px] text-slate-400 font-extrabold uppercase">Vendor Plan</p>
+                    <p class="text-xs font-extrabold text-amber-400 mt-1">R50 / Month</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Navigation Tabs -->
+        <div class="space-y-6">
+            <div class="border-b border-slate-200 flex items-center justify-between">
+                <nav class="flex gap-6 -mb-px">
+                    <button id="tabBtnOrders" onclick="switchMerchantTab('orders')" class="py-3 px-1 border-b-2 border-ubergreen font-extrabold text-sm text-ubergreen flex items-center gap-2">
+                        <i class="fa-solid fa-bell"></i> Live Incoming Orders
+                        <span id="orderBadgeCount" class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs">0</span>
+                    </button>
+                    <button id="tabBtnInventory" onclick="switchMerchantTab('inventory')" class="py-3 px-1 border-b-2 border-transparent font-extrabold text-sm text-slate-500 hover:text-slate-700 flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-stacked"></i> Store Inventory
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="merchantOrdersTab" class="space-y-4">
+                <div id="merchantOrdersContainer" class="space-y-4">
+                    <!-- Orders injected dynamically -->
+                </div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="merchantInventoryTab" class="hidden space-y-4">
+                <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 font-extrabold border-b border-slate-200 text-xs uppercase tracking-wider">
+                                    <th class="p-4">Item Details</th>
+                                    <th class="p-4">Vendor Store</th>
+                                    <th class="p-4">Category</th>
+                                    <th class="p-4">Price (ZAR)</th>
+                                    <th class="p-4">Stock Status</th>
+                                    <th class="p-4 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody" class="divide-y divide-slate-100">
+                                <!-- Inventory items -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- PRODUCT DETAILS MODAL (Customization) -->
+    <div id="productDetailModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="relative h-48 w-full bg-slate-100">
+                <img id="modalProductImg" src="" class="w-full h-full object-cover">
+                <button onclick="closeProductDetailModal()" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-slate-900/60 text-white flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-5 space-y-4 overflow-y-auto">
+                <div>
+                    <div class="flex items-center justify-between text-xs text-slate-400 font-bold mb-1">
+                        <span id="modalProductVendor" class="text-ubergreen">Vendor Name</span>
+                        <span id="modalProductUnit">Unit</span>
+                    </div>
+                    <h3 id="modalProductName" class="text-lg font-black text-slate-900 leading-tight">Product Title</h3>
+                    <p id="modalProductDesc" class="text-xs text-slate-500 mt-1">Detailed description...</p>
+                </div>
+
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                    <label class="block text-xs font-bold text-slate-700">Special Note / Customization (Optional)</label>
+                    <input type="text" id="modalProductNote" placeholder="e.g. Please select ripe ones / chop firewood fine" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-ubergreen">
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <div class="flex items-center gap-3 bg-slate-100 p-1.5 rounded-2xl">
+                        <button onclick="adjustModalQty(-1)" class="w-8 h-8 rounded-xl bg-white font-black text-sm text-slate-800 shadow-xs flex items-center justify-center">-</button>
+                        <span id="modalQtyDisplay" class="font-extrabold text-sm px-1 text-slate-900">1</span>
+                        <button onclick="adjustModalQty(1)" class="w-8 h-8 rounded-xl bg-ubergreen font-black text-sm text-slate-950 shadow-xs flex items-center justify-center">+</button>
+                    </div>
+
+                    <button onclick="confirmAddToCartFromModal()" class="px-6 py-3 rounded-2xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-black text-xs sm:text-sm shadow-md flex items-center gap-2">
+                        <span>Add to Basket •</span>
+                        <span id="modalTotalPrice">R 0.00</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE-OVER BASKET MODAL -->
+    <div id="cartModal" class="fixed inset-0 z-50 pointer-events-none opacity-0 transition-opacity duration-300">
+        <div id="cartBackdrop" onclick="toggleCartModal(false)" class="absolute inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"></div>
+
+        <div id="cartPanel" class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto">
+            
+            <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-uberdark text-white">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-ubergreen text-slate-950 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </div>
+                    <div>
+                        <h2 class="font-black text-base">Your Basket</h2>
+                        <p class="text-xs text-slate-400" id="cartHeaderSubtext">0 items selected</p>
+                    </div>
+                </div>
+                <button onclick="toggleCartModal(false)" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Basket Items List -->
+            <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Grouped cart items will be injected here -->
+            </div>
+
+            <div id="emptyCartView" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center space-y-3">
+                <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-slate-300 text-3xl">
+                    <i class="fa-solid fa-cart-arrow-down"></i>
+                </div>
+                <h3 class="font-bold text-slate-800 text-base">Your basket is empty</h3>
+                <p class="text-xs text-slate-500 max-w-xs">Add dry wood, fresh fruit, or braai meat from local Giyani vendors to begin.</p>
+                <button onclick="toggleCartModal(false)" class="px-5 py-2.5 rounded-xl bg-ubergreen text-slate-950 font-black text-xs shadow-md">
+                    Start Shopping
+                </button>
+            </div>
+
+            <!-- Cart Footer -->
+            <div id="cartFooter" class="p-5 border-t border-slate-200 bg-slate-50 space-y-3">
+                <div class="space-y-1.5 text-xs">
+                    <div class="flex justify-between text-slate-600">
+                        <span>Items Subtotal</span>
+                        <span id="cartSubtotal" class="font-semibold">R 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-slate-600">
+                        <span>Village Delivery Fee</span>
+                        <span id="cartDeliveryFee" class="font-semibold">R 15.00</span>
+                    </div>
+                    <div class="flex justify-between text-slate-900 font-black text-base pt-2 border-t border-slate-200">
+                        <span>Total</span>
+                        <span id="cartTotal" class="text-ubergreen">R 15.00</span>
+                    </div>
+                </div>
+
+                <button onclick="openCheckoutModal()" class="w-full py-3.5 rounded-2xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-black text-sm transition shadow-lg flex items-center justify-center gap-2">
+                    Proceed to Delivery Checkout <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col my-auto">
+            
+            <div class="p-5 bg-uberdark text-white flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-truck-fast text-ubergreen text-lg"></i>
+                    <h3 class="font-extrabold text-base">Giyani Village Delivery Address</h3>
+                </div>
+                <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="checkoutForm" onsubmit="handlePlaceOrder(event)" class="p-6 space-y-4 overflow-y-auto text-xs">
+                <div class="space-y-3">
+                    <h4 class="font-bold text-slate-400 uppercase tracking-wider">1. Contact & Stand Address</h4>
+                    
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Customer Full Name</label>
+                        <input type="text" id="custName" required placeholder="e.g. Tsakani Chauke" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">WhatsApp Mobile Number</label>
+                            <input type="tel" id="custPhone" required placeholder="082 123 4567" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-slate-700 mb-1">Village / Township Area</label>
+                            <select id="custVillage" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                                <option value="Giyani Section A (0826)">Giyani Section A (0826)</option>
+                                <option value="Giyani Section F (0826)">Giyani Section F (0826)</option>
+                                <option value="Kremetart (0826)">Kremetart (0826)</option>
+                                <option value="Makoxa Village (0826)">Makoxa Village (0826)</option>
+                                <option value="Muyexe Village (0826)">Muyexe Village (0826)</option>
+                                <option value="Nsama Area (0826)">Nsama Area (0826)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Stand / House Landmark Details</label>
+                        <input type="text" id="custAddress" required placeholder="e.g. Stand 452, near the Giyani Taxi Rank" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-2 border-t border-slate-100">
+                    <h4 class="font-bold text-slate-400 uppercase tracking-wider">2. Payment Method</h4>
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <label class="border-2 border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-ubergreen has-[:checked]:border-ubergreen has-[:checked]:bg-emerald-50">
+                            <input type="radio" name="paymentMethod" value="Cash on Delivery" checked class="hidden">
+                            <i class="fa-solid fa-money-bill-wave text-emerald-600 text-lg mb-1"></i>
+                            <span class="font-extrabold text-slate-800">Cash on Delivery</span>
+                        </label>
+                        <label class="border-2 border-slate-200 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer hover:border-ubergreen has-[:checked]:border-ubergreen has-[:checked]:bg-emerald-50">
+                            <input type="radio" name="paymentMethod" value="Capitec Pay / eWallet" class="hidden">
+                            <i class="fa-solid fa-mobile-screen-button text-brand-600 text-lg mb-1"></i>
+                            <span class="font-extrabold text-slate-800">eWallet / Capitec Pay</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-200 space-y-2">
+                    <button type="submit" class="w-full py-3.5 rounded-2xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-black text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-paper-plane"></i> Place In-App Order
+                    </button>
+                    
+                    <button type="button" onclick="handleWhatsAppCheckout()" class="w-full py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-md">
+                        <i class="fa-brands fa-whatsapp text-lg"></i> Direct WhatsApp Order to Vendor
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- VENDOR REGISTRATION / SUBSCRIPTION MODAL (R50/pm) -->
+    <div id="vendorJoinModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col my-auto">
+            
+            <div class="p-5 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-black uppercase text-amber-400 tracking-wider">Vendor Onboarding</span>
+                    <h3 class="font-black text-base">Register Your Local Store (R50 / month)</h3>
+                </div>
+                <button onclick="closeVendorJoinModal()" class="text-slate-400 hover:text-white text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleVendorRegistration(event)" class="p-6 space-y-4 overflow-y-auto text-xs">
+                
+                <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 flex items-center gap-3">
+                    <i class="fa-solid fa-circle-check text-amber-600 text-2xl shrink-0"></i>
+                    <div>
+                        <h5 class="font-black">14-Day Free Trial Included</h5>
+                        <p class="text-[11px] text-amber-800">List your products, receive local orders directly, and pay R50/month afterwards.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Business / Store Name</label>
+                    <input type="text" id="regVendorName" required placeholder="e.g. Malamulele Fresh Farmers" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Owner Name</label>
+                        <input type="text" id="regOwnerName" required placeholder="e.g. John Maluleke" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">WhatsApp Contact Number</label>
+                        <input type="tel" id="regVendorPhone" required placeholder="082 000 0000" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Store Category</label>
+                        <select id="regVendorCategory" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                            <option value="Firewood & Fuel">Firewood & Fuel</option>
+                            <option value="Fresh Produce">Fresh Produce & Farm</option>
+                            <option value="Spaza Basics">Spaza Basics & Grain</option>
+                            <option value="Butchery & Braai">Butchery & Braai</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Giyani Village Location</label>
+                        <input type="text" id="regVendorVillage" required placeholder="e.g. Kremetart / Section F" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Store Banner Image URL (Optional)</label>
+                    <input type="url" id="regVendorImg" placeholder="https://images.unsplash.com/..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 space-y-2">
+                    <button type="submit" class="w-full py-3.5 rounded-2xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-black text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rocket"></i> Activate R50 Store & Launch
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- LIVE ORDER TRACKER MODAL (UberEats Style Progress Bar) -->
+    <div id="trackerModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden p-6 space-y-6">
+            
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                    <span class="text-[10px] font-black text-ubergreen uppercase tracking-wider">UberEats Style Live Status</span>
+                    <h3 class="font-extrabold text-slate-900 text-lg" id="trackerOrderId">Order #MVM-1082</h3>
+                </div>
+                <button onclick="closeTrackerModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Courier Details -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center gap-4">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" class="w-12 h-12 rounded-full object-cover border-2 border-ubergreen">
+                <div class="flex-1">
+                    <h4 class="font-bold text-slate-900 text-xs sm:text-sm">Sipho M. (Giyani Village Runner)</h4>
+                    <p class="text-[11px] text-slate-500">Red Motorbike • GP 841 LP</p>
+                </div>
+                <a href="tel:0820000000" class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-phone"></i>
+                </a>
+            </div>
+
+            <!-- Vertical Progress Bar Tracker -->
+            <div class="space-y-4 px-2 text-xs">
+                <div class="flex items-start gap-4">
+                    <div id="stepDot1" class="w-7 h-7 rounded-full bg-ubergreen text-slate-950 flex items-center justify-center font-black shrink-0 shadow-md">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-black text-slate-900">Order Received by Vendor</h5>
+                        <p class="text-slate-500">Merchant confirmed order details</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div id="stepDot2" class="w-7 h-7 rounded-full bg-brand-500 text-slate-950 flex items-center justify-center font-black shrink-0 animate-pulse">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-black text-slate-900">Packing & Preparing</h5>
+                        <p class="text-slate-500">Selecting fresh produce / wood logs</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div id="stepDot3" class="w-7 h-7 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-black shrink-0">
+                        <i class="fa-solid fa-motorcycle"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-black text-slate-400">Driver En Route</h5>
+                        <p class="text-slate-400">Courier heading to your village stand</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div id="stepDot4" class="w-7 h-7 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center font-black shrink-0">
+                        <i class="fa-solid fa-house-chimney"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-black text-slate-400">Delivered</h5>
+                        <p class="text-slate-400">Handed over safely</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="switchMainView('merchant')" class="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition">
+                View in Vendor Dashboard
+            </button>
+
+        </div>
+    </div>
+
+    <!-- LOCATION SELECTOR MODAL -->
+    <div id="locationModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-black text-slate-900 text-sm">Select Giyani Village Area</h3>
+                <button onclick="closeLocationModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="space-y-2 text-xs font-bold text-slate-700">
+                <button onclick="setGlobalLocation('Giyani Section A (0826)')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50 hover:text-ubergreen border border-slate-200 text-left flex items-center justify-between">
+                    <span>Giyani Section A</span> <span class="text-[10px] text-slate-400">0826</span>
+                </button>
+                <button onclick="setGlobalLocation('Giyani Section F (0826)')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50 hover:text-ubergreen border border-slate-200 text-left flex items-center justify-between">
+                    <span>Giyani Section F</span> <span class="text-[10px] text-slate-400">0826</span>
+                </button>
+                <button onclick="setGlobalLocation('Kremetart (0826)')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50 hover:text-ubergreen border border-slate-200 text-left flex items-center justify-between">
+                    <span>Kremetart</span> <span class="text-[10px] text-slate-400">0826</span>
+                </button>
+                <button onclick="setGlobalLocation('Makoxa Village (0826)')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50 hover:text-ubergreen border border-slate-200 text-left flex items-center justify-between">
+                    <span>Makoxa Village</span> <span class="text-[10px] text-slate-400">0826</span>
+                </button>
+                <button onclick="setGlobalLocation('Muyexe Village (0826)')" class="w-full p-3 rounded-2xl bg-slate-50 hover:bg-emerald-50 hover:text-ubergreen border border-slate-200 text-left flex items-center justify-between">
+                    <span>Muyexe Village</span> <span class="text-[10px] text-slate-400">0826</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD PRODUCT MODAL (MERCHANT) -->
+    <div id="addProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 space-y-4 text-xs">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-slate-900 text-sm">Add New Product to Store</h3>
+                <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="handleAddNewProduct(event)" class="space-y-3">
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Product Title</label>
+                    <input type="text" id="newProdName" required placeholder="e.g. Fresh Red Apples 1kg" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-ubergreen">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Category</label>
+                        <select id="newProdCategory" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none">
+                            <option value="fuel">Firewood & Fuel</option>
+                            <option value="veggies">Fresh Veggies</option>
+                            <option value="fruits">Giyani Fruits</option>
+                            <option value="meats">Butchery & Meat</option>
+                            <option value="spaza">Spaza Basics</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 mb-1">Price (ZAR R)</label>
+                        <input type="number" step="0.5" id="newProdPrice" required placeholder="35.00" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 mb-1">Image URL (Unsplash)</label>
+                    <input type="url" id="newProdImg" placeholder="https://images.unsplash.com/..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-black transition shadow-md">
+                    Save Product
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-20 lg:bottom-6 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- MOBILE STICKY BOTTOM NAV BAR -->
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-uberdark/95 backdrop-blur-md border-t border-slate-800 px-6 py-2 flex items-center justify-around text-white shadow-2xl">
+        <button onclick="switchMainView('customer'); filterCategory('all');" class="flex flex-col items-center gap-1 text-ubergreen font-black text-[10px]">
+            <i class="fa-solid fa-house text-lg"></i> Home
+        </button>
+        <button onclick="toggleCartModal(true)" class="relative flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px]">
+            <i class="fa-solid fa-bag-shopping text-lg"></i> Basket
+            <span id="mobileCartBadge" class="absolute -top-1 right-1 bg-ubergreen text-slate-950 text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-black">0</span>
+        </button>
+        <button onclick="openVendorJoinModal()" class="flex flex-col items-center gap-1 text-amber-400 font-extrabold text-[10px]">
+            <i class="fa-solid fa-store text-lg"></i> Sell R50
+        </button>
+        <button onclick="toggleMainView()" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px]">
+            <i class="fa-solid fa-gauge-high text-lg"></i> Admin
+        </button>
+    </nav>
+
+    <script>
+        /* ==========================================================================
+           1. MOCK DATA: GIYANI 0826 MULTI-VENDOR MARKETPLACE
+           ========================================================================== */
+
+        let vendors = [
+            {
+                id: 'v1',
+                name: 'Giyani Hardwood & Fuel Co.',
+                category: 'Firewood & Fuel',
+                village: 'Kremetart (0826)',
+                rating: 4.9,
+                deliveryTime: '20-35 mins',
+                phone: '0821112222',
+                image: 'https://images.unsplash.com/photo-1520116468816-95b69f847357?auto=format&fit=crop&w=400&q=80',
+                subscribed: true
+            },
+            {
+                id: 'v2',
+                name: 'Malamulele Fresh Farmers',
+                category: 'Fresh Produce',
+                village: 'Giyani Section A (0826)',
+                rating: 4.8,
+                deliveryTime: '25-40 mins',
+                phone: '0823334444',
+                image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80',
+                subscribed: true
+            },
+            {
+                id: 'v3',
+                name: 'Muyexe Organic Veggies',
+                category: 'Fresh Produce',
+                village: 'Muyexe Village (0826)',
+                rating: 4.7,
+                deliveryTime: '30-45 mins',
+                phone: '0825556666',
+                image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=400&q=80',
+                subscribed: true
+            },
+            {
+                id: 'v4',
+                name: 'Njhakanjhaka Butchery & Braai',
+                category: 'Butchery & Braai',
+                village: 'Giyani Section F (0826)',
+                rating: 4.9,
+                deliveryTime: '15-30 mins',
+                phone: '0827778888',
+                image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80',
+                subscribed: true
+            }
+        ];
+
+        let products = [
+            {
+                id: 'p1',
+                vendorId: 'v1',
+                vendorName: 'Giyani Hardwood & Fuel Co.',
+                name: 'Dry Hardwood Stack (Huni)',
+                category: 'fuel',
+                price: 45.00,
+                unit: '10kg bundle',
+                rating: 4.9,
+                image: 'https://images.unsplash.com/photo-1520116468816-95b69f847357?auto=format&fit=crop&w=600&q=80',
+                description: 'Neat bundle of dry, long-burning hardwood logs. Perfect for pap cooking and braai.',
+                inStock: true
+            },
+            {
+                id: 'p2',
+                vendorId: 'v1',
+                vendorName: 'Giyani Hardwood & Fuel Co.',
+                name: 'Lumpwood Charcoal Bag',
+                category: 'fuel',
+                price: 38.00,
+                unit: '4kg bag',
+                rating: 4.8,
+                image: 'https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=600&q=80',
+                description: 'High heat lumpwood charcoal for quick braai and cooking.',
+                inStock: true
+            },
+            {
+                id: 'p3',
+                vendorId: 'v2',
+                vendorName: 'Malamulele Fresh Farmers',
+                name: 'Giyani Sweet Mangoes',
+                category: 'fruits',
+                price: 35.00,
+                unit: '1kg bag',
+                rating: 4.9,
+                image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?auto=format&fit=crop&w=600&q=80',
+                description: 'Fresh, juicy ripe Giyani mangoes picked straight from local trees.',
+                inStock: true
+            },
+            {
+                id: 'p4',
+                vendorId: 'v2',
+                vendorName: 'Malamulele Fresh Farmers',
+                name: 'Ripe Yellow Bananas',
+                category: 'fruits',
+                price: 22.00,
+                unit: 'per bunch',
+                rating: 4.7,
+                image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=600&q=80',
+                description: 'Sweet local banana bunches for immediate snacking.',
+                inStock: true
+            },
+            {
+                id: 'p5',
+                vendorId: 'v3',
+                vendorName: 'Muyexe Organic Veggies',
+                name: 'Fresh Farm Cabbage',
+                category: 'veggies',
+                price: 20.00,
+                unit: 'per large head',
+                rating: 4.8,
+                image: 'https://images.unsplash.com/photo-1598170845058-12ef4a45753b?auto=format&fit=crop&w=600&q=80',
+                description: 'Crisp green cabbage cultivated in Limpopo village fields.',
+                inStock: true
+            },
+            {
+                id: 'p6',
+                vendorId: 'v3',
+                vendorName: 'Muyexe Organic Veggies',
+                name: 'Red Tomatoes & Onions Combo',
+                category: 'veggies',
+                price: 30.00,
+                unit: '2kg combo',
+                rating: 4.8,
+                image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=600&q=80',
+                description: 'Plump red tomatoes and brown onions for family stew relish.',
+                inStock: true
+            },
+            {
+                id: 'p7',
+                vendorId: 'v4',
+                vendorName: 'Njhakanjhaka Butchery & Braai',
+                name: 'Traditional Boerewors',
+                category: 'meats',
+                price: 65.00,
+                unit: '500g pack',
+                rating: 4.9,
+                image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+                description: 'Spiced beef boerewors prepared fresh by local butcher.',
+                inStock: true
+            },
+            {
+                id: 'p8',
+                vendorId: 'v4',
+                vendorName: 'Njhakanjhaka Butchery & Braai',
+                name: 'Super White Maize Meal',
+                category: 'spaza',
+                price: 85.00,
+                unit: '10kg bag',
+                rating: 4.9,
+                image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=600&q=80',
+                description: 'Top grade white maize meal for smooth village pap.',
+                inStock: true
+            }
+        ];
+
+        let cart = [];
+        let orders = [
+            {
+                id: 'MVM-1082',
+                customer: 'Tsakani Chauke',
+                phone: '082 555 1234',
+                village: 'Giyani Section A (0826)',
+                address: 'Stand 421, near Giyani Taxi Rank',
+                items: [
+                    { name: 'Dry Hardwood Stack (Huni)', qty: 2, price: 45, vendor: 'Giyani Hardwood Co.' },
+                    { name: 'Fresh Farm Cabbage', qty: 1, price: 20, vendor: 'Muyexe Organic Veggies' }
+                ],
+                total: 125.00,
+                status: 'Preparing',
+                payment: 'Cash on Delivery',
+                time: '10 mins ago'
+            }
+        ];
+
+        let activeMainView = 'customer'; // 'customer' or 'merchant'
+        let currentCategory = 'all';
+        let currentVendor = 'all';
+        let currentSearchQuery = '';
+        let selectedLocation = 'Giyani Section A (0826)';
+        let activeModalProduct = null;
+        let activeModalQty = 1;
+
+        /* ==========================================================================
+           2. RENDER FUNCTIONS
+           ========================================================================== */
+
+        // Render Vendor Carousel Cards
+        function renderVendors() {
+            const container = document.getElementById('vendorCarousel');
+            container.innerHTML = '';
+
+            vendors.forEach(v => {
+                const card = document.createElement('div');
+                card.className = "w-64 shrink-0 bg-white rounded-2xl border border-slate-200/80 p-3 shadow-xs hover:shadow-md transition cursor-pointer flex items-center gap-3";
+                card.onclick = () => filterVendor(v.id);
+
+                card.innerHTML = `
+                    <img src="${v.image}" class="w-14 h-14 rounded-xl object-cover shrink-0">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-1 text-[10px] text-amber-500 font-black">
+                            <i class="fa-solid fa-star"></i> ${v.rating} • <span class="text-slate-400 font-normal">${v.deliveryTime}</span>
+                        </div>
+                        <h4 class="font-extrabold text-slate-900 text-xs truncate">${v.name}</h4>
+                        <p class="text-[10px] text-slate-500 truncate">${v.village}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Render Product Cards Grid
+        function renderCatalogue() {
+            const grid = document.getElementById('productGrid');
+            const noResults = document.getElementById('noResultsState');
+            grid.innerHTML = '';
+
+            let filtered = products.filter(p => {
+                const matchesCat = (currentCategory === 'all' || p.category === currentCategory);
+                const matchesVendor = (currentVendor === 'all' || p.vendorId === currentVendor);
+                const matchesSearch = p.name.toLowerCase().includes(currentSearchQuery.toLowerCase()) || 
+                                      p.description.toLowerCase().includes(currentSearchQuery.toLowerCase()) ||
+                                      p.vendorName.toLowerCase().includes(currentSearchQuery.toLowerCase());
+                return matchesCat && matchesVendor && matchesSearch;
+            });
+
+            document.getElementById('productCountBadge').innerText = `${filtered.length} Items Available`;
+
+            if (filtered.length === 0) {
+                grid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                grid.classList.remove('hidden');
+                noResults.classList.add('hidden');
+            }
+
+            filtered.forEach(product => {
+                const cartItem = cart.find(ci => ci.id === product.id);
+                const qty = cartItem ? cartItem.qty : 0;
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden group";
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="relative h-36 sm:h-44 w-full bg-slate-100 overflow-hidden cursor-pointer" onclick="openProductDetailModal('${product.id}')">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-2.5 left-2.5 bg-uberdark text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">
+                                ★ ${product.rating}
+                            </span>
+                        </div>
+
+                        <div class="p-3 sm:p-4 space-y-1">
+                            <span class="text-[10px] font-extrabold text-ubergreen block truncate">${product.vendorName}</span>
+                            <h3 class="font-bold text-slate-900 text-xs sm:text-sm line-clamp-1 cursor-pointer hover:text-ubergreen" onclick="openProductDetailModal('${product.id}')">
+                                ${product.name}
+                            </h3>
+                            <p class="text-[10px] text-slate-500 line-clamp-2">
+                                ${product.description}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-3 sm:p-4 pt-0 flex items-center justify-between gap-2 border-t border-slate-50 mt-2">
+                        <div>
+                            <span class="text-[9px] font-bold text-slate-400 block -mb-1">${product.unit}</span>
+                            <span class="text-xs sm:text-sm font-black text-slate-900">R ${product.price.toFixed(2)}</span>
+                        </div>
+
+                        ${qty === 0 ? `
+                            <button onclick="openProductDetailModal('${product.id}')" 
+                                class="px-3 py-1.5 rounded-xl bg-ubergreen hover:bg-emerald-600 text-slate-950 font-black text-xs transition shadow-xs">
+                                + Add
+                            </button>
+                        ` : `
+                            <div class="flex items-center gap-1.5 bg-emerald-50 p-1 rounded-xl border border-emerald-200">
+                                <button onclick="updateQty('${product.id}', -1)" class="w-5 h-5 rounded-md bg-white text-emerald-900 font-black text-xs flex items-center justify-center shadow-xs">
+                                    -
+                                </button>
+                                <span class="text-xs font-black px-1 text-emerald-950">${qty}</span>
+                                <button onclick="updateQty('${product.id}', 1)" class="w-5 h-5 rounded-md bg-ubergreen text-slate-950 font-black text-xs flex items-center justify-center shadow-xs">
+                                    +
+                                </button>
+                            </div>
+                        `}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Render Cart Items
+        function renderCart() {
+            const container = document.getElementById('cartItemsContainer');
+            const emptyView = document.getElementById('emptyCartView');
+            const footer = document.getElementById('cartFooter');
+            
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.classList.add('hidden');
+                emptyView.classList.remove('hidden');
+                footer.classList.add('hidden');
+            } else {
+                container.classList.remove('hidden');
+                emptyView.classList.add('hidden');
+                footer.classList.remove('hidden');
+            }
+
+            let subtotal = 0;
+            let totalItemCount = 0;
+
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                totalItemCount += item.qty;
+
+                const itemRow = document.createElement('div');
+                itemRow.className = "flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200/80";
+                
+                itemRow.innerHTML = `
+                    <img src="${item.image}" class="w-12 h-12 rounded-xl object-cover shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <span class="text-[9px] font-bold text-ubergreen block truncate">${item.vendorName}</span>
+                        <h4 class="font-extrabold text-slate-900 text-xs truncate">${item.name}</h4>
+                        ${item.note ? `<p class="text-[10px] text-amber-600 font-medium italic truncate">Note: ${item.note}</p>` : ''}
+                        <p class="text-xs font-black text-slate-900 mt-0.5">R ${(item.price * item.qty).toFixed(2)}</p>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200">
+                        <button onclick="updateQty('${item.id}', -1)" class="w-5 h-5 rounded-md bg-slate-100 text-slate-700 font-bold text-xs flex items-center justify-center">
+                            -
+                        </button>
+                        <span class="text-xs font-black px-1 text-slate-800">${item.qty}</span>
+                        <button onclick="updateQty('${item.id}', 1)" class="w-5 h-5 rounded-md bg-ubergreen text-slate-950 font-bold text-xs flex items-center justify-center">
+                            +
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(itemRow);
+            });
+
+            const deliveryFee = 15.00;
+            const grandTotal = subtotal + (cart.length > 0 ? deliveryFee : 0);
+
+            document.getElementById('cartCountBadge').innerText = totalItemCount;
+            document.getElementById('mobileCartBadge').innerText = totalItemCount;
+            document.getElementById('cartHeaderSubtext').innerText = `${totalItemCount} items selected`;
+            document.getElementById('cartSubtotal').innerText = `R ${subtotal.toFixed(2)}`;
+            document.getElementById('cartDeliveryFee').innerText = `R ${deliveryFee.toFixed(2)}`;
+            document.getElementById('cartTotal').innerText = `R ${grandTotal.toFixed(2)}`;
+        }
+
+        // Render Merchant Dashboard Feed
+        function renderMerchantOrders() {
+            const container = document.getElementById('merchantOrdersContainer');
+            container.innerHTML = '';
+
+            document.getElementById('orderBadgeCount').innerText = orders.length;
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center bg-white rounded-2xl border border-slate-200 text-slate-400">
+                        <i class="fa-solid fa-inbox text-3xl mb-2"></i>
+                        <p class="text-sm font-bold">No incoming orders yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            orders.forEach(ord => {
+                const card = document.createElement('div');
+                card.className = "p-5 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4";
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                        <div>
+                            <span class="text-xs font-black text-ubergreen">${ord.id}</span>
+                            <h4 class="font-bold text-slate-900 text-sm sm:text-base">${ord.customer}</h4>
+                            <p class="text-xs text-slate-500">${ord.phone} • ${ord.village}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">${ord.status}</span>
+                            <p class="text-xs text-slate-400 mt-1">${ord.time}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1 text-xs text-slate-700">
+                        <p class="font-semibold text-slate-500">Items Ordered:</p>
+                        <ul class="list-disc list-inside space-y-0.5">
+                            ${ord.items.map(i => `<li><span class="font-bold">${i.qty}x</span> ${i.name} (${i.vendor})</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between pt-3 border-t border-slate-100 gap-2">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase">Total & Method</span>
+                            <span class="text-sm font-black text-slate-900">R ${ord.total.toFixed(2)}</span>
+                            <span class="text-xs text-slate-500">(${ord.payment})</span>
+                        </div>
+
+                        <select onchange="updateOrderStatus('${ord.id}', this.value)" class="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none">
+                            <option value="Received" ${ord.status==='Received'?'selected':''}>Received</option>
+                            <option value="Preparing" ${ord.status==='Preparing'?'selected':''}>Preparing</option>
+                            <option value="Out for Delivery" ${ord.status==='Out for Delivery'?'selected':''}>Out for Delivery</option>
+                            <option value="Delivered" ${ord.status==='Delivered'?'selected':''}>Delivered</option>
+                        </select>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            document.getElementById('dashTotalSales').innerText = `R ${orders.reduce((sum, o) => sum + o.total, 0).toFixed(2)}`;
+            document.getElementById('dashActiveOrders').innerText = orders.filter(o => o.status !== 'Delivered').length;
+            document.getElementById('dashItemCount').innerText = products.length;
+        }
+
+        // Render Inventory Table (Merchant View)
+        function renderMerchantInventory() {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+
+            products.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-4 flex items-center gap-3">
+                        <img src="${p.image}" class="w-10 h-10 rounded-lg object-cover">
+                        <div>
+                            <p class="font-bold text-slate-900">${p.name}</p>
+                            <p class="text-[10px] text-slate-400">${p.unit}</p>
+                        </div>
+                    </td>
+                    <td class="p-4 font-extrabold text-ubergreen">${p.vendorName}</td>
+                    <td class="p-4 uppercase text-[10px] font-bold text-slate-500">${p.category}</td>
+                    <td class="p-4 font-black text-slate-900">R ${p.price.toFixed(2)}</td>
+                    <td class="p-4">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.inStock ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
+                            ${p.inStock ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                    </td>
+                    <td class="p-4 text-right">
+                        <button onclick="toggleStock('${p.id}')" class="text-xs font-bold text-ubergreen hover:underline">
+                            ${p.inStock ? 'Mark Out' : 'Mark In'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        /* ==========================================================================
+           3. USER ACTIONS & CART LOGIC
+           ========================================================================== */
+
+        function openProductDetailModal(productId) {
+            const p = products.find(item => item.id === productId);
+            if (!p) return;
+
+            activeModalProduct = p;
+            activeModalQty = 1;
+
+            document.getElementById('modalProductImg').src = p.image;
+            document.getElementById('modalProductVendor').innerText = p.vendorName;
+            document.getElementById('modalProductUnit').innerText = p.unit;
+            document.getElementById('modalProductName').innerText = p.name;
+            document.getElementById('modalProductDesc').innerText = p.description;
+            document.getElementById('modalProductNote').value = '';
+            
+            updateModalPrice();
+            document.getElementById('productDetailModal').classList.remove('hidden');
+        }
+
+        function closeProductDetailModal() {
+            document.getElementById('productDetailModal').classList.add('hidden');
+        }
+
+        function adjustModalQty(change) {
+            activeModalQty = Math.max(1, activeModalQty + change);
+            updateModalPrice();
+        }
+
+        function updateModalPrice() {
+            document.getElementById('modalQtyDisplay').innerText = activeModalQty;
+            const total = (activeModalProduct.price * activeModalQty).toFixed(2);
+            document.getElementById('modalTotalPrice').innerText = `R ${total}`;
+        }
+
+        function confirmAddToCartFromModal() {
+            if (!activeModalProduct) return;
+
+            const note = document.getElementById('modalProductNote').value;
+            const existing = cart.find(ci => ci.id === activeModalProduct.id);
+
+            if (existing) {
+                existing.qty += activeModalQty;
+                if(note) existing.note = note;
+            } else {
+                cart.push({ ...activeModalProduct, qty: activeModalQty, note: note });
+            }
+
+            closeProductDetailModal();
+            renderCatalogue();
+            renderCart();
+            showToast(`Added ${activeModalProduct.name} to basket`);
+        }
+
+        function updateQty(productId, change) {
+            const item = cart.find(ci => ci.id === productId);
+            if (!item) return;
+
+            item.qty += change;
+            if (item.qty <= 0) {
+                cart = cart.filter(ci => ci.id !== productId);
+            }
+
+            renderCatalogue();
+            renderCart();
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-pill').forEach(btn => {
+                if (btn.dataset.category === cat) {
+                    btn.className = "cat-pill active px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition border bg-uberdark text-white border-uberdark shadow-md";
+                } else {
+                    btn.className = "cat-pill px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold whitespace-nowrap transition border bg-white text-slate-700 border-slate-200 hover:border-ubergreen";
+                }
+            });
+            renderCatalogue();
+        }
+
+        function filterVendor(vendorId) {
+            currentVendor = vendorId;
+            renderCatalogue();
+        }
+
+        function handleSearch(val) {
+            currentSearchQuery = val;
+            renderCatalogue();
+        }
+
+        /* ==========================================================================
+           4. CHECKOUT & WHATSAPP ROUTING
+           ========================================================================== */
+
+        function handlePlaceOrder(e) {
+            e.preventDefault();
+            if (cart.length === 0) return;
+
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const village = document.getElementById('custVillage').value;
+            const address = document.getElementById('custAddress').value;
+            const payment = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+            const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const total = subtotal + 15.00;
+
+            const newOrder = {
+                id: `MVM-${Math.floor(1000 + Math.random() * 9000)}`,
+                customer: name,
+                phone: phone,
+                village: village,
+                address: address,
+                items: [...cart],
+                total: total,
+                status: 'Received',
+                payment: payment,
+                time: 'Just now'
+            };
+
+            orders.unshift(newOrder);
+            cart = [];
+            renderCatalogue();
+            renderCart();
+            closeCheckoutModal();
+
+            document.getElementById('trackerOrderId').innerText = `Order #${newOrder.id}`;
+            document.getElementById('trackerModal').classList.remove('hidden');
+            showToast('Order successfully sent to local vendor!');
+        }
+
+        function handleWhatsAppCheckout() {
+            if (cart.length === 0) return;
+
+            const name = document.getElementById('custName').value || 'Customer';
+            const village = document.getElementById('custVillage').value || 'Giyani Section A';
+            const address = document.getElementById('custAddress').value || 'Stand info';
+
+            const subtotal = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const total = subtotal + 15.00;
+
+            let text = `🛒 *MZANSI VILLAGE MARKET ORDER*\n\n`;
+            text += `*Customer:* ${name}\n`;
+            text += `*Village:* ${village}, ${address}\n\n`;
+            text += `*Items Ordered:*\n`;
+            
+            cart.forEach(item => {
+                text += `• ${item.qty}x ${item.name} (${item.vendorName}) - R${(item.price * item.qty).toFixed(2)}\n`;
+                if(item.note) text += `  _Note: ${item.note}_\n`;
+            });
+
+            text += `\n*Village Delivery:* R15.00`;
+            text += `\n*TOTAL DUE:* R${total.toFixed(2)}`;
+
+            const encoded = encodeURIComponent(text);
+            window.open(`https://wa.me/27820000000?text=${encoded}`, '_blank');
+        }
+
+        /* ==========================================================================
+           5. VENDOR SUBSCRIPTION (R50/pm) & PORTAL
+           ========================================================================== */
+
+        function handleVendorRegistration(e) {
+            e.preventDefault();
+            const name = document.getElementById('regVendorName').value;
+            const owner = document.getElementById('regOwnerName').value;
+            const phone = document.getElementById('regVendorPhone').value;
+            const category = document.getElementById('regVendorCategory').value;
+            const village = document.getElementById('regVendorVillage').value;
+            const img = document.getElementById('regVendorImg').value || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80';
+
+            const newVendor = {
+                id: `v${vendors.length + 1}`,
+                name: name,
+                category: category,
+                village: village,
+                rating: 5.0,
+                deliveryTime: '20-30 mins',
+                phone: phone,
+                image: img,
+                subscribed: true
+            };
+
+            vendors.push(newVendor);
+            closeVendorJoinModal();
+            renderVendors();
+            switchMainView('merchant');
+            showToast(`${name} activated under R50/pm Plan!`);
+        }
+
+        function handleAddNewProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('newProdName').value;
+            const category = document.getElementById('newProdCategory').value;
+            const price = parseFloat(document.getElementById('newProdPrice').value);
+            const img = document.getElementById('newProdImg').value || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=500&q=80';
+
+            const newP = {
+                id: `p${products.length + 1}`,
+                vendorId: vendors[0].id,
+                vendorName: vendors[0].name,
+                name: name,
+                category: category,
+                price: price,
+                unit: 'per pack',
+                rating: 5.0,
+                image: img,
+                description: 'Fresh local product available for fast delivery in Giyani.',
+                inStock: true
+            };
+
+            products.push(newP);
+            closeAddProductModal();
+            renderCatalogue();
+            renderMerchantInventory();
+            showToast('New product added to store!');
+        }
+
+        /* ==========================================================================
+           6. VIEW SWITCHERS & MODALS
+           ========================================================================== */
+
+        function switchMainView(view) {
+            activeMainView = view;
+            const custView = document.getElementById('customerView');
+            const merchView = document.getElementById('merchantView');
+            const btnText = document.getElementById('viewSwitchText');
+
+            if (view === 'customer') {
+                custView.classList.remove('hidden');
+                merchView.classList.add('hidden');
+                btnText.innerText = "Merchant Portal";
+            } else {
+                custView.classList.add('hidden');
+                merchView.classList.remove('hidden');
+                btnText.innerText = "Customer App";
+                renderMerchantOrders();
+                renderMerchantInventory();
+            }
+        }
+
+        function toggleMainView() {
+            switchMainView(activeMainView === 'customer' ? 'merchant' : 'customer');
+        }
+
+        function switchMerchantTab(tab) {
+            const ordersTab = document.getElementById('merchantOrdersTab');
+            const invTab = document.getElementById('merchantInventoryTab');
+            const btnOrders = document.getElementById('tabBtnOrders');
+            const btnInv = document.getElementById('tabBtnInventory');
+
+            if (tab === 'orders') {
+                ordersTab.classList.remove('hidden');
+                invTab.classList.add('hidden');
+                btnOrders.className = "py-3 px-1 border-b-2 border-ubergreen font-extrabold text-sm text-ubergreen flex items-center gap-2";
+                btnInv.className = "py-3 px-1 border-b-2 border-transparent font-extrabold text-sm text-slate-500 hover:text-slate-700 flex items-center gap-2";
+            } else {
+                ordersTab.classList.add('hidden');
+                invTab.classList.remove('hidden');
+                btnInv.className = "py-3 px-1 border-b-2 border-ubergreen font-extrabold text-sm text-ubergreen flex items-center gap-2";
+                btnOrders.className = "py-3 px-1 border-b-2 border-transparent font-extrabold text-sm text-slate-500 hover:text-slate-700 flex items-center gap-2";
+            }
+        }
+
+        function toggleCartModal(open) {
+            const modal = document.getElementById('cartModal');
+            const panel = document.getElementById('cartPanel');
+            if (open) {
+                modal.classList.remove('pointer-events-none', 'opacity-0');
+                panel.classList.remove('translate-x-full');
+            } else {
+                panel.classList.add('translate-x-full');
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        function openCheckoutModal() { toggleCartModal(false); document.getElementById('checkoutModal').classList.remove('hidden'); }
+        function closeCheckoutModal() { document.getElementById('checkoutModal').classList.add('hidden'); }
+        function openVendorJoinModal() { document.getElementById('vendorJoinModal').classList.remove('hidden'); }
+        function closeVendorJoinModal() { document.getElementById('vendorJoinModal').classList.add('hidden'); }
+        function openLocationModal() { document.getElementById('locationModal').classList.remove('hidden'); }
+        function closeLocationModal() { document.getElementById('locationModal').classList.add('hidden'); }
+        function closeTrackerModal() { document.getElementById('trackerModal').classList.add('hidden'); }
+        function openAddProductModal() { document.getElementById('addProductModal').classList.remove('hidden'); }
+        function closeAddProductModal() { document.getElementById('addProductModal').classList.add('hidden'); }
+
+        function setGlobalLocation(loc) {
+            selectedLocation = loc;
+            document.getElementById('headerLocationLabel').innerText = loc;
+            document.getElementById('mobileLocationLabel').innerText = loc;
+            closeLocationModal();
+            showToast(`Location set to ${loc}`);
+        }
+
+        function toggleStock(productId) {
+            const p = products.find(item => item.id === productId);
+            if (p) {
+                p.inStock = !p.inStock;
+                renderMerchantInventory();
+                renderCatalogue();
+            }
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const ord = orders.find(o => o.id === orderId);
+            if (ord) {
+                ord.status = newStatus;
+                renderMerchantOrders();
+                showToast(`Order #${orderId} updated to ${newStatus}`);
+            }
+        }
+
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = "bg-uberdark text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 pointer-events-auto border border-slate-700";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-ubergreen"></i> ${msg}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        window.onload = function() {
+            renderVendors();
+            renderCatalogue();
+            renderCart();
+        }
+    </script>
+</body>
+</html>
